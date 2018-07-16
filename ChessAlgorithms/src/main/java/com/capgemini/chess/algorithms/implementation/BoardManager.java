@@ -264,6 +264,15 @@ public class BoardManager {
 			return Color.BLACK;
 		}
 	}
+	
+	private Color calculateActuallMoveColor(){
+		if(calculateNextMoveColor().equals(Color.WHITE)){
+			return Color.BLACK;
+			}
+		else {
+			return Color.WHITE;
+		}
+	}
 
 	private int findLastNonAttackMoveIndex() {
 		int counter = 0;

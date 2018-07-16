@@ -62,4 +62,5 @@ public class Board {
 	public Piece getPieceAt(Coordinate coordinate) {
 		return pieces[coordinate.getX()][coordinate.getY()];
 	}
+	
 }
