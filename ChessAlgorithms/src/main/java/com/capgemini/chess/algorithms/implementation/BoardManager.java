@@ -64,7 +64,14 @@ public class BoardManager {
 
 		Move move = validateMove(from, to);
 
+		// preValidator
+		
 		addMove(move);
+		
+		// postValidator(check isKingInCheck, check isPaT i takie pierdy) - if postValidator
+		// stwierdzi ze krol jest szachowany po wykonaniu ruchu uuwa dodany ruch(removeLastMove()) i zwraca blad.
+		
+		
 
 		return move;
 	}
