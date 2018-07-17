@@ -13,6 +13,9 @@ import com.capgemini.chess.algorithms.data.enums.BoardState;
 import com.capgemini.chess.algorithms.data.enums.MoveType;
 import com.capgemini.chess.algorithms.data.enums.Piece;
 import com.capgemini.chess.algorithms.data.generated.Board;
+import com.capgemini.chess.algorithms.implementation.exceptions.InvalidColorException;
+import com.capgemini.chess.algorithms.implementation.exceptions.InvalidCoordinateException;
+import com.capgemini.chess.algorithms.implementation.exceptions.InvalidKingNumberException;
 import com.capgemini.chess.algorithms.implementation.exceptions.InvalidMoveException;
 import com.capgemini.chess.algorithms.implementation.exceptions.KingInCheckException;
 
@@ -159,7 +162,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMoveBishopAttack() throws InvalidMoveException {
+	public void testPerformMoveBishopAttack() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		board.setPieceAt(Piece.WHITE_BISHOP, new Coordinate(0, 6));
@@ -174,7 +177,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMovePawnAttack() throws InvalidMoveException {
+	public void testPerformMovePawnAttack() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		board.getMoveHistory().add(createDummyMove(board));
@@ -190,7 +193,7 @@ public class BoardManagerTest {
 	}
 
 	@Test
-	public void testPerformMoveKingAttack() throws InvalidMoveException {
+	public void testPerformMoveKingAttack() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		board.setPieceAt(Piece.WHITE_KING, new Coordinate(4, 0));
@@ -205,7 +208,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMoveKnightCapture() throws InvalidMoveException {
+	public void testPerformMoveKnightCapture() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		board.getMoveHistory().add(createDummyMove(board));
@@ -222,7 +225,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMoveQueenCapture() throws InvalidMoveException {
+	public void testPerformMoveQueenCapture() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		board.setPieceAt(Piece.WHITE_QUEEN, new Coordinate(5, 0));
@@ -238,7 +241,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMoveRookCapture() throws InvalidMoveException {
+	public void testPerformMoveRookCapture() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		board.getMoveHistory().add(createDummyMove(board));
@@ -255,7 +258,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMoveCastling() throws InvalidMoveException {
+	public void testPerformMoveCastling() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		board.setPieceAt(Piece.WHITE_KING, new Coordinate(4, 0));
@@ -271,7 +274,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMoveEnPassant() throws InvalidMoveException {
+	public void testPerformMoveEnPassant() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		BoardManager boardManager = new BoardManager(board);
@@ -298,7 +301,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(8, 6), new Coordinate(7, 6));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -317,7 +320,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(0, 7), new Coordinate(1, 6));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -335,7 +338,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(0, 7), new Coordinate(1, 6));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -354,7 +357,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(0, 0), new Coordinate(0, 0));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -374,7 +377,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(1, 2), new Coordinate(1, 1));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -393,7 +396,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(1, 2), new Coordinate(0, 3));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -412,7 +415,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(1, 2), new Coordinate(1, 4));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -432,7 +435,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(1, 2), new Coordinate(1, 3));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -451,7 +454,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(4, 0), new Coordinate(4, 2));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -470,7 +473,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(1, 1), new Coordinate(3, 3));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -489,7 +492,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(1, 1), new Coordinate(1, 2));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -509,7 +512,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(1, 1), new Coordinate(6, 6));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -529,7 +532,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(3, 0), new Coordinate(3, 7));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -549,7 +552,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(5, 6), new Coordinate(3, 5));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -558,7 +561,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testPerformMoveInvalidCastlingPiecesMoved() throws InvalidMoveException {
+	public void testPerformMoveInvalidCastlingPiecesMoved() throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 		// given
 		Board board = new Board();
 		BoardManager boardManager = new BoardManager(board);
@@ -574,7 +577,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(4, 0), new Coordinate(6, 0));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -595,7 +598,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(4, 0), new Coordinate(6, 0));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -616,7 +619,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(4, 0), new Coordinate(6, 0));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = true;
 		}
 		
@@ -637,7 +640,7 @@ public class BoardManagerTest {
 		boolean exceptionThrown = false;
 		try {
 			boardManager.performMove(new Coordinate(4, 5), new Coordinate(7, 2));
-		} catch (InvalidMoveException e) {
+		} catch (InvalidMoveException | InvalidColorException | InvalidCoordinateException | InvalidKingNumberException e) {
 			exceptionThrown = e instanceof KingInCheckException;
 		}
 		

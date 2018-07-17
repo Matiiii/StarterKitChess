@@ -11,6 +11,9 @@ import com.capgemini.chess.algorithms.data.enums.MoveType;
 import com.capgemini.chess.algorithms.data.enums.Piece;
 import com.capgemini.chess.algorithms.data.enums.PieceType;
 import com.capgemini.chess.algorithms.data.generated.Board;
+import com.capgemini.chess.algorithms.implementation.exceptions.InvalidColorException;
+import com.capgemini.chess.algorithms.implementation.exceptions.InvalidCoordinateException;
+import com.capgemini.chess.algorithms.implementation.exceptions.InvalidKingNumberException;
 import com.capgemini.chess.algorithms.implementation.exceptions.InvalidMoveException;
 import com.capgemini.chess.algorithms.implementation.exceptions.KingInCheckException;
 
@@ -59,8 +62,11 @@ public class BoardManager {
 	 * @return move object which includes moved piece and move type
 	 * @throws InvalidMoveException
 	 *             in case move is not valid
+	 * @throws InvalidKingNumberException 
+	 * @throws InvalidCoordinateException 
+	 * @throws InvalidColorException 
 	 */
-	public Move performMove(Coordinate from, Coordinate to) throws InvalidMoveException {
+	public Move performMove(Coordinate from, Coordinate to) throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 
 		Move move = validateMove(from, to);
 
@@ -238,23 +244,30 @@ public class BoardManager {
 		this.board.setPieceAt(null, lastMove.getTo());
 	}
 
-	private Move validateMove(Coordinate from, Coordinate to) throws InvalidMoveException, KingInCheckException {
-
-		// TODO please add implementation here
+	private Move validateMove(Coordinate from, Coordinate to) throws InvalidMoveException, KingInCheckException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
+		
+		Move move = new Move();
+		MoveValidator moveValidator = new MoveValidator();
+		
+		boolean validateMoveWitchChecks = moveValidator.validateMoveWitchChecks(from, to, getBoard(), calculateActuallMoveColor());
+		
 		return null;
+		
 	}
 
 	private boolean isKingInCheck(Color kingColor) {
 
-		// TODO please add implementation here
-		return false;
+		MoveValidator moveValidator = new MoveValidator();
+		
+		return moveValidator.isKingInCheck(getBoard(), kingColor);
 	}
 
 	private boolean isAnyMoveValid(Color nextMoveColor) {
 
-		// TODO please add implementation here
+		MoveValidator moveValidator = new MoveValidator();
+		
 
-		return false;
+		return true;
 	}
 
 	private Color calculateNextMoveColor() {
