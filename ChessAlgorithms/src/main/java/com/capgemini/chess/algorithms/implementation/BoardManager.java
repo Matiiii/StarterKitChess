@@ -287,5 +287,6 @@ public class BoardManager {
 
 		return lastNonAttackMoveIndex;
 	}
+	
 
 }
