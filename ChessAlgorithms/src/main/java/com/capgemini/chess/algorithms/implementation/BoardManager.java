@@ -62,22 +62,23 @@ public class BoardManager {
 	 * @return move object which includes moved piece and move type
 	 * @throws InvalidMoveException
 	 *             in case move is not valid
-	 * @throws InvalidKingNumberException 
-	 * @throws InvalidCoordinateException 
-	 * @throws InvalidColorException 
+	 * @throws InvalidKingNumberException
+	 * @throws InvalidCoordinateException
+	 * @throws InvalidColorException
 	 */
-	public Move performMove(Coordinate from, Coordinate to) throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
+	public Move performMove(Coordinate from, Coordinate to)
+			throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 
 		Move move = validateMove(from, to);
 
 		// preValidator
-		
+
 		addMove(move);
-		
-		// postValidator(check isKingInCheck, check isPaT i takie pierdy) - if postValidator
-		// stwierdzi ze krol jest szachowany po wykonaniu ruchu uuwa dodany ruch(removeLastMove()) i zwraca blad.
-		
-		
+
+		// postValidator(check isKingInCheck, check isPaT i takie pierdy) - if
+		// postValidator
+		// stwierdzi ze krol jest szachowany po wykonaniu ruchu uuwa dodany
+		// ruch(removeLastMove()) i zwraca blad.
 
 		return move;
 	}
@@ -86,7 +87,7 @@ public class BoardManager {
 	 * Calculates state of the chess board.
 	 *
 	 * @return state of the chess board
-	 * @throws InvalidColorException 
+	 * @throws InvalidColorException
 	 */
 	public BoardState updateBoardState() throws InvalidColorException {
 
@@ -245,33 +246,40 @@ public class BoardManager {
 		this.board.setPieceAt(null, lastMove.getTo());
 	}
 
-	private Move validateMove(Coordinate from, Coordinate to) throws InvalidMoveException, KingInCheckException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
-		
+	private Move validateMove(Coordinate from, Coordinate to) throws InvalidMoveException, KingInCheckException,
+			InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
+
 		Move move = new Move();
 		MoveValidator moveValidator = new MoveValidator();
-		
+
 		moveValidator.validateMoveWitchChecks(from, to, getBoard(), calculateNextMoveColor());
 		move.setFrom(from);
 		move.setTo(to);
-		move.setType(MoveType.ATTACK);
-		//move.setMovedPiece(movedPiece);
+		move.setType(getBoard().checkMoveType(from, to));
+										// ruch
+		move.setMovedPiece(board.getPieceAt(from));
 		return move;
-		
+
 	}
 
 	private boolean isKingInCheck(Color kingColor) throws InvalidColorException {
 
 		MoveValidator moveValidator = new MoveValidator();
-		
+
 		return moveValidator.isKingInCheck(getBoard(), kingColor);
 	}
 
 	private boolean isAnyMoveValid(Color nextMoveColor) {
-
-		MoveValidator moveValidator = new MoveValidator();
 		
-
-		return true;
+		MoveValidator moveValidator = new MoveValidator();
+		boolean isAnyMoveValid = true;
+		try {
+			isAnyMoveValid = moveValidator.isAnyMoveValid(getBoard());
+		} catch (InvalidColorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isAnyMoveValid;
 	}
 
 	private Color calculateNextMoveColor() {
@@ -281,8 +289,6 @@ public class BoardManager {
 			return Color.BLACK;
 		}
 	}
-	
-
 
 	private int findLastNonAttackMoveIndex() {
 		int counter = 0;
@@ -297,6 +303,5 @@ public class BoardManager {
 
 		return lastNonAttackMoveIndex;
 	}
-	
 
 }
