@@ -25,6 +25,14 @@ public class MoveValidator {
 		return true;
 	}
 
+	private boolean isCoordinateNotEmpty(Coordinate coordinate, Board board) throws InvalidCoordinateException {
+		if (board.getPieceAt(coordinate) == null) {
+			throw new InvalidCoordinateException();
+		}
+		return true;
+
+	}
+
 	private boolean isCoordinateOnBoard(Coordinate coordinate) {
 
 		if (coordinate.getX() > 7 || coordinate.getY() < 0 || coordinate.getX() < 0 || coordinate.getY() > 7) {
@@ -44,6 +52,15 @@ public class MoveValidator {
 
 	}
 
+	private void isTryCaptureOwnColor(Coordinate coordinateToCapture, Board board, Color ownColor)
+			throws InvalidColorException {
+		if (board.getPieceAt(coordinateToCapture) != null
+				&& board.getPieceAt(coordinateToCapture).getColor().equals(ownColor)) {
+			throw new InvalidColorException();
+		}
+
+	}
+
 	private boolean areKingsOnBoard(Board board) throws InvalidKingNumberException {
 
 		int countWhiteKing = 0;
@@ -52,10 +69,12 @@ public class MoveValidator {
 		for (int coordinateX = 0; coordinateX < 8; coordinateX++) {
 			for (int coordinateY = 0; coordinateY < 8; coordinateY++) {
 				Coordinate coordinate = new Coordinate(coordinateX, coordinateY);
-				if (board.getPieceAt(coordinate).getType().equals(Piece.WHITE_KING)) {
+				if (board.getPieceAt(coordinate) != null && board.getPieceAt(coordinate).getColor().equals(Color.WHITE)
+						&& board.getPieceAt(coordinate).getType().equals(PieceType.KING)) {
 					countWhiteKing++;
 				}
-				if (board.getPieceAt(coordinate).getType().equals(Piece.BLACK_KING)) {
+				if (board.getPieceAt(coordinate) != null && board.getPieceAt(coordinate).getType() == (PieceType.KING)
+						&& board.getPieceAt(coordinate).getColor().equals(Color.BLACK)) {
 					countBlackKing++;
 				}
 			}
@@ -69,14 +88,17 @@ public class MoveValidator {
 
 	}
 
-	private Coordinate correctMoveInThisPosition(Coordinate from, Board board, int diffX, int diffY) {
+	private Coordinate correctMoveInThisPosition(Coordinate from, Board board, int diffX, int diffY)
+			throws InvalidColorException {
 
 		Coordinate incrasedCoordinate = new Coordinate(from.getX() + diffX, from.getY() + diffY);
 
-		if ((isCoordinateOnBoard(incrasedCoordinate)
-				&& (board.getPieceAt(incrasedCoordinate).getColor() != board.getPieceAt(from).getColor())
-				|| board.getPieceAt(incrasedCoordinate) == null)) {
-			return incrasedCoordinate;
+		if (isCoordinateOnBoard(incrasedCoordinate)) {
+
+			if (board.getPieceAt(incrasedCoordinate) == null
+					|| board.getPieceAt(incrasedCoordinate).getColor() != board.getPieceAt(from).getColor()) {
+				return incrasedCoordinate;
+			}
 
 		}
 		return null;
@@ -87,7 +109,7 @@ public class MoveValidator {
 
 		Coordinate incrasedCoordinate = new Coordinate(from.getX() + diffX, from.getY() + diffY);
 
-		if ((isCoordinateOnBoard(incrasedCoordinate)
+		if ((isCoordinateOnBoard(incrasedCoordinate) && board.getPieceAt(incrasedCoordinate) != null
 				&& board.getPieceAt(incrasedCoordinate).getColor() != board.getPieceAt(from).getColor())) {
 			return incrasedCoordinate;
 
@@ -127,51 +149,74 @@ public class MoveValidator {
 		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, 0, 1));
 		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, -1, 0));
 		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, 0, -1));
+		
+		while(listOfCorrectMoves.contains(null)){
+			listOfCorrectMoves.remove(null);
+		}
+
 		return listOfCorrectMoves;
 
 	}
 
-	private List<Coordinate> correctMovesKnight(Coordinate from, Board board) {
+	private List<Coordinate> correctMovesKnight(Coordinate from, Board board) throws InvalidColorException {
 
 		List<Coordinate> listOfCorrectMoves = new ArrayList<>();
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 2, 1));
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 2, -1));
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -2, 1));
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -2, -1));
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 1, 2));
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -1, 2));
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 1, -2));
+		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -1, -2));
+		
+		while(listOfCorrectMoves.contains(null)){
+			listOfCorrectMoves.remove(null);
+		}
 
-		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, 1, 1));
-		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, -1, 1));
-		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, -1, -1));
-		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, 1, -1));
+
 		return listOfCorrectMoves;
 
 	}
 
 	private List<Coordinate> removeCoordinateIfKingInCheckAfterMove(Coordinate from, Board board,
-			List<Coordinate> listOfCorrectMoves) {
-		for (Coordinate coordinate : listOfCorrectMoves) {
-			Piece pieceInHand = board.getPieceAt(from);
-			Piece pieceInCoordinateTo = board.getPieceAt(coordinate);
+			List<Coordinate> listOfCorrectMoves) throws InvalidColorException {
+		List<Coordinate> listCoordinatesWhenKingIsChecked = new ArrayList<>();
+		if (!listOfCorrectMoves.isEmpty()) {
+			for (Coordinate coordinate : listOfCorrectMoves) {
+				Piece pieceInHand = board.getPieceAt(from);
+				Piece pieceInCoordinateTo = null;
+				if (board.getPieceAt(coordinate)!=null) {
+					pieceInCoordinateTo = board.getPieceAt(coordinate);
+				}
 
-			board.setPieceAt(null, from);
-			board.setPieceAt(pieceInHand, coordinate);
+				board.setPieceAt(null, from);
+				board.setPieceAt(pieceInHand, coordinate);
 
-			if (isKingInCheck(board, pieceInHand.getColor())) {
-				listOfCorrectMoves.remove(coordinate);
+				if (isKingInCheck(board, pieceInHand.getColor())) {
+					listCoordinatesWhenKingIsChecked.add(coordinate);
+				}
+				board.setPieceAt(pieceInHand, from);
+				board.setPieceAt(pieceInCoordinateTo, coordinate);
+
 			}
-			board.setPieceAt(pieceInHand, from);
-			board.setPieceAt(pieceInCoordinateTo, coordinate);
-
+			if (!listCoordinatesWhenKingIsChecked.isEmpty()) {
+				listOfCorrectMoves.removeAll(listCoordinatesWhenKingIsChecked);
+			}
 		}
+
 		return listOfCorrectMoves;
 	}
 
-	public boolean isKingInCheck(Board board, Color color) {
+	public boolean isKingInCheck(Board board, Color color) throws InvalidColorException {
 
 		Coordinate kingPosition = getKingPosition(board, color);
 		List<Coordinate> enemyPiecesPositions = listOfEnemyPieces(board, color);
 		List<Coordinate> enemyAvaliblePositions = new ArrayList<>();
 
 		for (Coordinate coordinate : enemyPiecesPositions) {
-			
+
 			enemyAvaliblePositions.addAll(getCorrectMovesFromPiece(coordinate, board));
-			
 
 		}
 
@@ -189,7 +234,7 @@ public class MoveValidator {
 		for (int coordinateX = 0; coordinateX < 8; coordinateX++) {
 			for (int coordinateY = 0; coordinateY < 8; coordinateY++) {
 				Coordinate coordinate = new Coordinate(coordinateX, coordinateY);
-				if (board.getPieceAt(coordinate).getColor() == color
+				if (board.getPieceAt(coordinate) != null && board.getPieceAt(coordinate).getColor() == color
 						&& board.getPieceAt(coordinate).getType() == PieceType.KING) {
 					kingPosition = coordinate;
 				}
@@ -209,7 +254,7 @@ public class MoveValidator {
 		for (int coordinateX = 0; coordinateX < 8; coordinateX++) {
 			for (int coordinateY = 0; coordinateY < 8; coordinateY++) {
 				Coordinate coordinate = new Coordinate(coordinateX, coordinateY);
-				if (board.getPieceAt(coordinate).getColor() == enemyColor) {
+				if (board.getPieceAt(coordinate) != null && board.getPieceAt(coordinate).getColor() == enemyColor) {
 					listPositionsOfEnemyPieces.add(coordinate);
 				}
 			}
@@ -221,19 +266,20 @@ public class MoveValidator {
 	private List<Coordinate> correctMovesBishop(Coordinate from, Board board) {
 
 		List<Coordinate> listOfCorrectMoves = new ArrayList<>();
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 2, 1));
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 2, -1));
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -2, 1));
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -2, -1));
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 1, 2));
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -1, 2));
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 1, -2));
-		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -1, -2));
+		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, 1, 1));
+		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, -1, 1));
+		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, -1, -1));
+		listOfCorrectMoves.addAll(correctMovesInOneDirection(from, board, 1, -1));
+		
+		while(listOfCorrectMoves.contains(null)){
+			listOfCorrectMoves.remove(null);
+		}
+
 
 		return listOfCorrectMoves;
 	}
 
-	private List<Coordinate> correctMovesKing(Coordinate from, Board board) {
+	private List<Coordinate> correctMovesKing(Coordinate from, Board board) throws InvalidColorException {
 
 		List<Coordinate> listOfCorrectMoves = new ArrayList<>();
 		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 0, 1));
@@ -244,6 +290,11 @@ public class MoveValidator {
 		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -1, 0));
 		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, 1, -1));
 		listOfCorrectMoves.add(correctMoveInThisPosition(from, board, -1, -1));
+		
+		while(listOfCorrectMoves.contains(null)){
+			listOfCorrectMoves.remove(null);
+		}
+
 
 		return listOfCorrectMoves;
 	}
@@ -253,13 +304,17 @@ public class MoveValidator {
 		List<Coordinate> listOfCorrectMoves = new ArrayList<>();
 
 		listOfCorrectMoves.addAll(correctMovesRook(from, board));
-		listOfCorrectMoves.addAll(correctMovesKnight(from, board));
+		listOfCorrectMoves.addAll(correctMovesBishop(from, board));
+
+		while(listOfCorrectMoves.contains(null)){
+			listOfCorrectMoves.remove(null);
+		}
 
 		return listOfCorrectMoves;
 
 	}
 
-	private List<Coordinate> correctMovesPawn(Coordinate from, Board board) {
+	private List<Coordinate> correctMovesPawn(Coordinate from, Board board) throws InvalidColorException {
 		List<Coordinate> listOfCorrectMoves = new ArrayList<>();
 
 		if (board.getPieceAt(from).getColor().equals(Color.WHITE)) {
@@ -285,74 +340,78 @@ public class MoveValidator {
 			listOfCorrectMoves.add(correctEnPassantForPawn(from, board, -1, -1));
 
 		}
-
+		while(listOfCorrectMoves.contains(null)){
+			listOfCorrectMoves.remove(null);
+		}
+		
 		return listOfCorrectMoves;
 	}
 
 	private Coordinate correctEnPassantForPawn(Coordinate from, Board board, int diffX, int diffY) {
 
 		Coordinate incrasedCoordinate = new Coordinate(from.getX() + diffX, from.getY() + diffY);
-		Move lastMove = board.getMoveHistory().get(board.getMoveHistory().size() - 1);
-		Piece lastMovedPiecie = lastMove.getMovedPiece();
-		int lastMovedDistance = Math.abs(lastMove.getFrom().getY() - lastMove.getTo().getY());
-		boolean isLastMovedPiecePawn = lastMovedPiecie.getType().equals(PieceType.PAWN);
-		boolean isCoordinateXCorect = lastMove.getTo().getX() == from.getX() + diffX;
-		boolean isCoordinateYCorect = lastMove.getTo().getY() == from.getY();
+		if (!board.getMoveHistory().isEmpty()) {
+			Move lastMove = board.getMoveHistory().get(board.getMoveHistory().size() - 1);
+			Piece lastMovedPiecie = lastMove.getMovedPiece();
+			int lastMovedDistance = Math.abs(lastMove.getFrom().getY() - lastMove.getTo().getY());
+			boolean isLastMovedPiecePawn = lastMovedPiecie.getType().equals(PieceType.PAWN);
+			boolean isCoordinateXCorect = lastMove.getTo().getX() == from.getX() + diffX;
+			boolean isCoordinateYCorect = lastMove.getTo().getY() == from.getY();
 
-		if (isLastMovedPiecePawn && lastMovedDistance == 2 && isCoordinateXCorect && isCoordinateYCorect) {
-			return incrasedCoordinate;
+			if (isLastMovedPiecePawn && lastMovedDistance == 2 && isCoordinateXCorect && isCoordinateYCorect) {
+				return incrasedCoordinate;
+			}
 		}
 		return null;
 	}
 
-private List<Coordinate> getCorrectMovesFromPiece(Coordinate from, Board board){
-	
-	Piece piece =board.getPieceAt(from);
-	switch(piece.getType()){
-	
-	case BISHOP:
-		return correctMovesBishop(from, board);
-		
-		
-	case KING:
-		return correctMovesKing(from, board);
-		
-		
-	case KNIGHT:
-		return correctMovesKnight(from, board);
-		
-		
-	case PAWN:
-		return correctMovesPawn(from, board);
-		
-		
-	case QUEEN:
-		return correctMovesQueen(from, board);
-		
-		
-	case ROOK:
-		return correctMovesRook(from, board);
-		
-		
-	default:
-		break;
-	
-	}
-	return null;
-	
-}
+	private List<Coordinate> getCorrectMovesFromPiece(Coordinate from, Board board) throws InvalidColorException {
 
-public boolean validateMoveWitchChecks(Coordinate from, Coordinate to, Board board, Color expectedColor) throws InvalidColorException, InvalidCoordinateException, InvalidKingNumberException{
-	isCoordinateExist(from);
-	isCoordinateExist(to);
-	isInCoordinateRightColorPiece(from, board, expectedColor);
-	areKingsOnBoard(board);
-	
-	List<Coordinate> avalibleMoves = removeCoordinateIfKingInCheckAfterMove(from, board, getCorrectMovesFromPiece(from, board));
-	
-	
-	
-	return avalibleMoves.contains(to);
-}
+		Piece piece = board.getPieceAt(from);
+		switch (piece.getType()) {
+
+		case BISHOP:
+			return correctMovesBishop(from, board);
+
+		case KING:
+			return correctMovesKing(from, board);
+
+		case KNIGHT:
+			return correctMovesKnight(from, board);
+
+		case PAWN:
+			return correctMovesPawn(from, board);
+
+		case QUEEN:
+			return correctMovesQueen(from, board);
+
+		case ROOK:
+			return correctMovesRook(from, board);
+
+		default:
+			break;
+
+		}
+		return null;
+
+	}
+
+	public boolean validateMoveWitchChecks(Coordinate from, Coordinate to, Board board, Color expectedColor)
+			throws InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
+		isCoordinateExist(from);
+		isCoordinateExist(to);
+		isCoordinateNotEmpty(from, board);
+		isInCoordinateRightColorPiece(from, board, expectedColor);
+		isTryCaptureOwnColor(to, board, expectedColor);
+		//areKingsOnBoard(board);
+
+		List<Coordinate> avalibleMoves = removeCoordinateIfKingInCheckAfterMove(from, board,
+				getCorrectMovesFromPiece(from, board));
+		if (avalibleMoves.contains(to)) {
+			return true;
+		} else {
+			throw new InvalidCoordinateException();
+		}
+	}
 
 }

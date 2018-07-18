@@ -86,8 +86,9 @@ public class BoardManager {
 	 * Calculates state of the chess board.
 	 *
 	 * @return state of the chess board
+	 * @throws InvalidColorException 
 	 */
-	public BoardState updateBoardState() {
+	public BoardState updateBoardState() throws InvalidColorException {
 
 		Color nextMoveColor = calculateNextMoveColor();
 
@@ -249,13 +250,16 @@ public class BoardManager {
 		Move move = new Move();
 		MoveValidator moveValidator = new MoveValidator();
 		
-		boolean validateMoveWitchChecks = moveValidator.validateMoveWitchChecks(from, to, getBoard(), calculateActuallMoveColor());
-		
-		return null;
+		moveValidator.validateMoveWitchChecks(from, to, getBoard(), calculateNextMoveColor());
+		move.setFrom(from);
+		move.setTo(to);
+		move.setType(MoveType.ATTACK);
+		//move.setMovedPiece(movedPiece);
+		return move;
 		
 	}
 
-	private boolean isKingInCheck(Color kingColor) {
+	private boolean isKingInCheck(Color kingColor) throws InvalidColorException {
 
 		MoveValidator moveValidator = new MoveValidator();
 		
@@ -278,14 +282,7 @@ public class BoardManager {
 		}
 	}
 	
-	private Color calculateActuallMoveColor(){
-		if(calculateNextMoveColor().equals(Color.WHITE)){
-			return Color.BLACK;
-			}
-		else {
-			return Color.WHITE;
-		}
-	}
+
 
 	private int findLastNonAttackMoveIndex() {
 		int counter = 0;

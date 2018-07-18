@@ -526,6 +526,7 @@ public class BoardManagerTest {
 		Board board = new Board();
 		board.setPieceAt(Piece.WHITE_ROOK, new Coordinate(3, 0));
 		board.setPieceAt(Piece.WHITE_PAWN, new Coordinate(3, 2));
+		board.setPieceAt(Piece.BLACK_PAWN, new Coordinate(6, 2));
 		
 		// when
 		BoardManager boardManager = new BoardManager(board);
@@ -649,7 +650,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testUpdateBoardStateRegular() throws InvalidMoveException {
+	public void testUpdateBoardStateRegular() throws InvalidMoveException, InvalidColorException {
 		// given
 		BoardManager boardManager = new BoardManager();
 		
@@ -661,7 +662,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testUpdateBoardStateCheck() throws InvalidMoveException {
+	public void testUpdateBoardStateCheck() throws InvalidMoveException, InvalidColorException {
 		// given
 		Board board = new Board();
 		board.getMoveHistory().add(createDummyMove(board));
@@ -677,7 +678,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testUpdateBoardStateCheckMate() throws InvalidMoveException {
+	public void testUpdateBoardStateCheckMate() throws InvalidMoveException, InvalidColorException {
 		// given
 		Board board = new Board();
 		board.getMoveHistory().add(createDummyMove(board));
@@ -694,7 +695,7 @@ public class BoardManagerTest {
 	}
 	
 	@Test
-	public void testUpdateBoardStateStaleMate() throws InvalidMoveException {
+	public void testUpdateBoardStateStaleMate() throws InvalidMoveException, InvalidColorException {
 		// given
 		Board board = new Board();
 		board.getMoveHistory().add(createDummyMove(board));
