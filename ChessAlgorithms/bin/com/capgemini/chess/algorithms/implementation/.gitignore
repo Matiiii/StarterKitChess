@@ -1,3 +1,12 @@
 /BoardManagerTest.class
 /MoveValidator.class
 /BoardManager.class
+/MoveProvider.class
+/KingMoveProvider.class
+/QeenMoveProvider.class
+/PawnMoveProvider.class
+/KnightMoveProvider.class
+/BishopMovesProvider.class
+/RookMoveProvider.class
+/BishopMoveProvider.class
+/ChessTestSuite.class

@@ -7,25 +7,23 @@ import com.capgemini.chess.algorithms.data.Coordinate;
 import com.capgemini.chess.algorithms.data.Move;
 import com.capgemini.chess.algorithms.data.enums.BoardState;
 import com.capgemini.chess.algorithms.data.enums.Color;
-import com.capgemini.chess.algorithms.data.enums.MoveType;
 import com.capgemini.chess.algorithms.data.enums.Piece;
 import com.capgemini.chess.algorithms.data.enums.PieceType;
 
 /**
- * Board representation.
- * Board objects are generated based on move history.
+ * Board representation. Board objects are generated based on move history.
  * 
  * @author Michal Bejm
  *
  */
 public class Board {
-	
+
 	public static final int SIZE = 8;
-	
+
 	private Piece[][] pieces = new Piece[SIZE][SIZE];
 	private List<Move> moveHistory = new ArrayList<>();
 	private BoardState state;
-	
+
 	public Board() {
 	}
 
@@ -44,29 +42,33 @@ public class Board {
 	public void setState(BoardState state) {
 		this.state = state;
 	}
-	
+
 	/**
 	 * Sets chess piece on board based on given coordinates
 	 * 
-	 * @param piece chess piece
-	 * @param board chess board
-	 * @param coordinate given coordinates
+	 * @param piece
+	 *            chess piece
+	 * @param board
+	 *            chess board
+	 * @param coordinate
+	 *            given coordinates
 	 */
 	public void setPieceAt(Piece piece, Coordinate coordinate) {
 		pieces[coordinate.getX()][coordinate.getY()] = piece;
 	}
-	
+
 	/**
 	 * Gets chess piece from board based on given coordinates
 	 * 
-	 * @param coordinate given coordinates
+	 * @param coordinate
+	 *            given coordinates
 	 * @return chess piece
 	 */
 	public Piece getPieceAt(Coordinate coordinate) {
 		return pieces[coordinate.getX()][coordinate.getY()];
 	}
-	
-	public List<Coordinate> getCoordinateOfEnemyPieces(){
+
+	public List<Coordinate> getCoordinateOfEnemyPieces() {
 		List<Coordinate> listPositionsOfEnemyPieces = new ArrayList<>();
 		Color enemyColor = Color.BLACK;
 
@@ -85,8 +87,8 @@ public class Board {
 
 		return listPositionsOfEnemyPieces;
 	}
-	
-	public List<Coordinate> getCoordinateOfOwnPieces(){
+
+	public List<Coordinate> getCoordinateOfOwnPieces() {
 		List<Coordinate> listPositionsOfEnemyPieces = new ArrayList<>();
 		Color ownColor = Color.BLACK;
 
@@ -105,7 +107,7 @@ public class Board {
 
 		return listPositionsOfEnemyPieces;
 	}
-	
+
 	public Coordinate getOwnKingPosition() {
 
 		Color color = Color.BLACK;
@@ -126,7 +128,7 @@ public class Board {
 		}
 		return kingPosition;
 	}
-	
+
 	public Coordinate getEnemyKingPosition() {
 
 		Color color = Color.BLACK;
@@ -147,10 +149,9 @@ public class Board {
 		}
 		return kingPosition;
 	}
-	
+
 	public Coordinate getKingPosition(Color color) {
 
-		
 		Coordinate kingPosition = new Coordinate(0, 0);
 
 		for (int coordinateX = 0; coordinateX < 8; coordinateX++) {
@@ -164,21 +165,15 @@ public class Board {
 		}
 		return kingPosition;
 	}
-	
-	public MoveType checkMoveType(Coordinate from, Coordinate to){
-		if(getPieceAt(from).getType().equals(PieceType.PAWN)&&getPieceAt(to)==null&&from.getX()!=to.getX()){
-			return MoveType.EN_PASSANT;
-		}else if(getPieceAt(from).equals(PieceType.KING)&&Math.abs(from.getX()-to.getX())==2){
-			return MoveType.CASTLING;
-			
-		}else if(getPieceAt(to)!=null){
-			return MoveType.CAPTURE;
-			
-		}else{
-			return MoveType.ATTACK;
+
+	public boolean isCoordinateOnBoard(Coordinate coordinate) {
+
+		if (coordinate.getX() > SIZE - 1 || coordinate.getY() < 0 || coordinate.getX() < 0
+				|| coordinate.getY() > SIZE - 1) {
+			return false;
 		}
-		
+
+		return true;
 	}
-	
-	
+
 }

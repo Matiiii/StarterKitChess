@@ -1,6 +1,6 @@
 package com.capgemini.chess.algorithms.implementation.exceptions;
 
-public class InvalidColorException extends Exception {
+public class InvalidColorException extends InvalidMoveException {
 
 	/**
 	 * 
@@ -16,7 +16,5 @@ public class InvalidColorException extends Exception {
 		super("You take or capture wrong color! Stupid!" + message);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 }

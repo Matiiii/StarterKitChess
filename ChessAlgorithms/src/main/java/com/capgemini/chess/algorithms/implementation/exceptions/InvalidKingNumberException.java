@@ -1,6 +1,6 @@
 package com.capgemini.chess.algorithms.implementation.exceptions;
 
-public class InvalidKingNumberException extends Exception{
+public class InvalidKingNumberException extends InvalidMoveException {
 
 	/**
 	 * 
@@ -16,7 +16,5 @@ public class InvalidKingNumberException extends Exception{
 		super("Fatal Error! Wrong Number Of Kings!" + message);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 }

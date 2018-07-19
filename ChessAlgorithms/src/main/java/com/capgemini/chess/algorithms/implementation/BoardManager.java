@@ -70,16 +70,7 @@ public class BoardManager {
 			throws InvalidMoveException, InvalidColorException, InvalidCoordinateException, InvalidKingNumberException {
 
 		Move move = validateMove(from, to);
-
-		// preValidator
-
 		addMove(move);
-
-		// postValidator(check isKingInCheck, check isPaT i takie pierdy) - if
-		// postValidator
-		// stwierdzi ze krol jest szachowany po wykonaniu ruchu uuwa dodany
-		// ruch(removeLastMove()) i zwraca blad.
-
 		return move;
 	}
 
@@ -255,8 +246,8 @@ public class BoardManager {
 		moveValidator.validateMoveWitchChecks(from, to, getBoard(), calculateNextMoveColor());
 		move.setFrom(from);
 		move.setTo(to);
-		move.setType(getBoard().checkMoveType(from, to));
-										// ruch
+		move.setType(checkMoveType(from, to,getBoard()));
+										
 		move.setMovedPiece(board.getPieceAt(from));
 		return move;
 
@@ -302,6 +293,21 @@ public class BoardManager {
 		}
 
 		return lastNonAttackMoveIndex;
+	}
+	
+	private MoveType checkMoveType(Coordinate from, Coordinate to, Board board) {
+		if (board.getPieceAt(from).getType().equals(PieceType.PAWN) && board.getPieceAt(to) == null
+				&& from.getX() != to.getX()) {
+			return MoveType.EN_PASSANT;
+		} else if (board.getPieceAt(from).equals(PieceType.KING) && Math.abs(from.getX() - to.getX()) == 2) {
+			return MoveType.CASTLING;
+
+		} else if (board.getPieceAt(to) != null) {
+			return MoveType.CAPTURE;
+
+		} else {
+			return MoveType.ATTACK;
+		}
 	}
 
 }
