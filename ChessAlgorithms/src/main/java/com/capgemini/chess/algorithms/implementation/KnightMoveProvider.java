@@ -6,7 +6,7 @@ import java.util.List;
 import com.capgemini.chess.algorithms.data.Coordinate;
 import com.capgemini.chess.algorithms.data.generated.Board;
 
-public class KnightMoveProvider implements MoveProvider {
+public class KnightMoveProvider extends PieceMoves implements MoveProvider {
 
 	@Override
 	public List<Coordinate> moves(Coordinate from, Board board) {
@@ -26,22 +26,6 @@ public class KnightMoveProvider implements MoveProvider {
 		}
 
 		return listOfCorrectMoves;
-	}
-
-	private Coordinate correctMoveInThisPosition(Coordinate from, Board board, int diffX, int diffY) {
-
-		Coordinate incrasedCoordinate = new Coordinate(from.getX() + diffX, from.getY() + diffY);
-
-		if (board.isCoordinateOnBoard(incrasedCoordinate)) {
-
-			if (board.getPieceAt(incrasedCoordinate) == null
-					|| board.getPieceAt(incrasedCoordinate).getColor() != board.getPieceAt(from).getColor()) {
-				return incrasedCoordinate;
-			}
-
-		}
-		return null;
-
 	}
 
 }

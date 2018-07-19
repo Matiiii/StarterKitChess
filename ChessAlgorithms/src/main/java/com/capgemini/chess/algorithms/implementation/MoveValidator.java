@@ -126,6 +126,26 @@ public class MoveValidator {
 		return false;
 	}
 
+	public boolean isCoordinatesUnderAttack(Board board, List<Coordinate> coordinates) throws InvalidColorException {
+
+		List<Coordinate> enemyPiecesPositions = board.getCoordinateOfEnemyPieces();
+		List<Coordinate> enemyAvaliblePositions = new ArrayList<>();
+
+		for (Coordinate coordinate : enemyPiecesPositions) {
+
+			enemyAvaliblePositions.addAll(getCorrectMovesFromPiece(coordinate, board));
+
+		}
+
+		for (Coordinate coordinate : coordinates) {
+			if (enemyAvaliblePositions.contains(coordinate)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public boolean isAnyMoveValid(Board board) throws InvalidColorException {
 
 		List<Coordinate> ownPiecesPositions = board.getCoordinateOfOwnPieces();
@@ -145,56 +165,28 @@ public class MoveValidator {
 		return false;
 	}
 
-	/*
-	 * private Coordinate correctCastlingForKing(Coordinate from, Board board,
-	 * int diffX, int diffY) {
-	 * 
-	 * Coordinate incrasedCoordinate = new Coordinate(from.getX() + diffX,
-	 * from.getY() + diffY); if (!board.getMoveHistory().isEmpty()) { Move
-	 * lastMove = board.getMoveHistory().get(board.getMoveHistory().size() - 1);
-	 * Piece lastMovedPiecie = lastMove.getMovedPiece(); boolean
-	 * islastMovedDistance2 = Math.abs(lastMove.getFrom().getY() -
-	 * lastMove.getTo().getY()) == 2; boolean isKingsFirstMove =
-	 * board.getMoveHistory().contains(new Move); boolean isCoordinateXCorect
-	 * 
-	 * 
-	 * 
-	 * 
-	 * = lastMove.getTo().getX() == from.getX() + diffX; boolean
-	 * isCoordinateYCorect = lastMove.getTo().getY() == from.getY();
-	 * 
-	 * if (isLastMovedPiecePawn && islastMovedDistance2 && isCoordinateXCorect
-	 * && isCoordinateYCorect) { return incrasedCoordinate; } } return null; }
-	 */
-
-	private List<Coordinate> getCorrectMovesFromPiece(Coordinate from, Board board) throws InvalidColorException {
+	public List<Coordinate> getCorrectMovesFromPiece(Coordinate from, Board board) throws InvalidColorException {
 
 		Piece piece = board.getPieceAt(from);
 		switch (piece.getType()) {
 
 		case BISHOP:
 			return new BishopMoveProvider().moves(from, board);
-		// return correctMovesBishop(from, board);
 
 		case KING:
 			return new KingMoveProvider().moves(from, board);
-		// return correctMovesKing(from, board);
 
 		case KNIGHT:
 			return new KnightMoveProvider().moves(from, board);
-		// return correctMovesKnight(from, board);
 
 		case PAWN:
 			return new PawnMoveProvider().moves(from, board);
-		// return correctMovesPawn(from, board);
 
 		case QUEEN:
 			return new QeenMoveProvider().moves(from, board);
-		// return correctMovesQueen(from, board);
 
 		case ROOK:
 			return new RookMoveProvider().moves(from, board);
-		// return correctMovesRook(from, board);
 
 		default:
 			break;
@@ -211,7 +203,7 @@ public class MoveValidator {
 		isCoordinateNotEmpty(from, board);
 		isInCoordinateRightColorPiece(from, board, expectedColor);
 		isTryCaptureOwnColor(to, board, expectedColor);
-		areKingsOnBoard(board);
+		// areKingsOnBoard(board);
 
 		List<Coordinate> avalibleMoves = getCorrectMovesFromPiece(from, board);
 

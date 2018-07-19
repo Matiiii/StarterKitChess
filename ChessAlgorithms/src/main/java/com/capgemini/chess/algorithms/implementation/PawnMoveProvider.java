@@ -19,7 +19,7 @@ public class PawnMoveProvider implements MoveProvider {
 		if (board.getPieceAt(from).getColor().equals(Color.WHITE)) {
 			listOfCorrectMoves.add(correctMoveInThisPositionForPawn(from, board, 0, 1));
 
-			if (from.getX() == 2 && correctMoveInThisPositionForPawn(from, board, 0, 1) != null) {
+			if (from.getY() == 1 && correctMoveInThisPositionForPawn(from, board, 0, 1) != null) {
 				listOfCorrectMoves.add(correctMoveInThisPositionForPawn(from, board, 0, 2));
 			}
 			listOfCorrectMoves.add(correctMoveInCrossPositionForPawn(from, board, 1, 1));

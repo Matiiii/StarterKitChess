@@ -10,3 +10,6 @@
 /RookMoveProvider.class
 /BishopMoveProvider.class
 /ChessTestSuite.class
+/PieceMoves.class
+/TestGame.class
+/FullGameTest.class
